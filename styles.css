@@ -208,6 +208,14 @@ body::after {
 
 .nav.scrolled::before { opacity: 0; }
 
+/* Drop backdrop-filter when mobile menu is open — prevents the .nav from
+   becoming a containing block that traps the position:fixed .nav-mobile */
+.nav.open {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: var(--bg);
+}
+
 .nav-inner {
   width: 100%;
   max-width: var(--container-max);
@@ -346,14 +354,15 @@ body::after {
 
 .nav-toggle {
   display: none;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   align-items: center;
   justify-content: center;
   background: transparent;
   color: var(--text);
   border: 1px solid var(--border-strong);
   border-radius: var(--r-sm);
+  cursor: pointer;
 }
 
 /* Mobile menu — base: hidden on desktop */
@@ -2291,7 +2300,7 @@ body::after {
     background: var(--bg);
     padding: var(--space-2xl) var(--container-gutter);
     gap: var(--space-lg);
-    z-index: 99;
+    z-index: 200;
     overflow-y: auto;
   }
 
@@ -2319,7 +2328,15 @@ body::after {
   .lead-modal__row { grid-template-columns: 1fr; }
   .orgs-row { gap: var(--space-lg); }
   .hero h1 { max-width: 100%; }
-  .page-header { padding-bottom: 48px; }
+
+  /* Page header — drop excess top air; tighter min-height so the eye lands on the H1 */
+  .page-header {
+    padding-top: calc(var(--nav-h) + 32px);
+    padding-bottom: 40px;
+    min-height: 320px;
+  }
+  .page-header-crumb { margin-bottom: var(--space-sm); }
+  .page-header-lead { margin-top: var(--space-md); }
 
   .testimonial-card--small .testimonial-card-quote { font-size: var(--text-sm); }
 }
@@ -2329,6 +2346,13 @@ body::after {
   .big-cta { padding: var(--space-2xl) var(--space-lg); }
   .stat-item { padding: var(--space-lg) var(--space-md); }
   .hero-ctas .btn { width: 100%; justify-content: center; }
+
+  /* Even tighter on very narrow phones (iPhone SE / Mini class) */
+  .page-header {
+    padding-top: calc(var(--nav-h) + 24px);
+    padding-bottom: 32px;
+    min-height: 280px;
+  }
 }
 
 /* Reduce motion */
