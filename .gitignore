@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# Build-time / scraper artifacts (not needed for deploy)
+analysis.md
+brand-kit.json
+content-profile.json
+pages.json
+scrape-*.json
+screenshot-before.png
+screenshots/

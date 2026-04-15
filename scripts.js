@@ -1,0 +1,319 @@
+/* ==========================================================================
+   PRECISION JIU-JITSU — THE BARRACKS
+   Shared scripts: lead modal, nav scroll, marquee, schedule, booking page,
+   GSAP scroll reveals, dynamic copyright year, stat counters.
+   ========================================================================== */
+
+(function () {
+  'use strict';
+
+  // -------- 1. Lucide icons --------
+  function initIcons() {
+    try {
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+    } catch (e) {}
+  }
+
+  // -------- 2. Dynamic copyright year --------
+  function initYear() {
+    document.querySelectorAll('[data-year]').forEach(function (el) {
+      el.textContent = String(new Date().getFullYear());
+    });
+  }
+
+  // -------- 3. Nav scroll behavior --------
+  function initNavScroll() {
+    var nav = document.querySelector('.nav');
+    if (!nav) return;
+    var toggleScrolled = function () {
+      if (window.scrollY > 32) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    };
+    toggleScrolled();
+    window.addEventListener('scroll', toggleScrolled, { passive: true });
+  }
+
+  // -------- 4. Mobile nav toggle --------
+  function initMobileNav() {
+    var toggle = document.querySelector('.nav-toggle');
+    var nav = document.querySelector('.nav');
+    if (!toggle || !nav) return;
+    toggle.addEventListener('click', function () {
+      nav.classList.toggle('open');
+      var isOpen = nav.classList.contains('open');
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    nav.querySelectorAll('.nav-mobile a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        nav.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+  }
+
+  // -------- 5. Marquee duplication (for seamless loop) --------
+  function initMarquee() {
+    document.querySelectorAll('.marquee-track').forEach(function (track) {
+      if (track.dataset.duplicated === 'true') return;
+      var children = Array.from(track.children);
+      children.forEach(function (child) {
+        track.appendChild(child.cloneNode(true));
+      });
+      track.dataset.duplicated = 'true';
+    });
+  }
+
+  // -------- 6. Stat counter animation --------
+  function initStatCounters() {
+    var counters = document.querySelectorAll('.stat-num[data-target]');
+    if (!counters.length || !('IntersectionObserver' in window)) return;
+
+    var animateCounter = function (el) {
+      var target = parseFloat(el.dataset.target);
+      var suffix = el.dataset.suffix || '';
+      var duration = 1200;
+      var start = 0;
+      var startTime = null;
+      var ease = function (t) { return 1 - Math.pow(1 - t, 3); };
+
+      // Pre-build the suffix span once so we can re-use it
+      var numNode = el.querySelector('.num-val');
+      var suffixNode = el.querySelector('.suffix');
+      if (!numNode) {
+        el.textContent = '';
+        numNode = document.createElement('span');
+        numNode.className = 'num-val';
+        el.appendChild(numNode);
+        if (suffix) {
+          suffixNode = document.createElement('span');
+          suffixNode.className = 'suffix';
+          suffixNode.textContent = suffix;
+          el.appendChild(suffixNode);
+        }
+      }
+
+      var step = function (timestamp) {
+        if (!startTime) startTime = timestamp;
+        var elapsed = timestamp - startTime;
+        var progress = Math.min(elapsed / duration, 1);
+        var current = Math.round(start + (target - start) * ease(progress));
+        numNode.textContent = String(current);
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !entry.target.dataset.animated) {
+          entry.target.dataset.animated = 'true';
+          animateCounter(entry.target);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    counters.forEach(function (el) { io.observe(el); });
+  }
+
+  // -------- 7. GSAP scroll reveals --------
+  function initScrollReveals() {
+    if (!window.gsap || !window.ScrollTrigger) return;
+    try {
+      gsap.registerPlugin(ScrollTrigger);
+    } catch (e) { return; }
+
+    gsap.utils.toArray('.fade-in-up').forEach(function (el, idx) {
+      gsap.fromTo(el,
+        { opacity: 0, y: 32 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: 'power3.out',
+          delay: (idx % 3) * 0.08,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+            once: true
+          }
+        }
+      );
+    });
+  }
+
+  // -------- 8. LEAD MODAL --------
+  function initLeadModal() {
+    var modal = document.getElementById('leadModal');
+    if (!modal) return;
+
+    var form = modal.querySelector('form');
+    var closeBtns = modal.querySelectorAll('[data-close-modal]');
+    var programSelect = modal.querySelector('select[name="program"]');
+
+    var openModal = function (preselectedProgram) {
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      if (preselectedProgram && programSelect) {
+        programSelect.value = preselectedProgram;
+      }
+      var firstInput = modal.querySelector('input, select');
+      if (firstInput) setTimeout(function () { firstInput.focus(); }, 120);
+    };
+
+    var closeModal = function () {
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    };
+
+    document.addEventListener('click', function (e) {
+      var trigger = e.target.closest('[data-cta="lead-modal"]');
+      if (trigger) {
+        e.preventDefault();
+        openModal(trigger.dataset.program || '');
+      }
+    });
+
+    closeBtns.forEach(function (btn) {
+      btn.addEventListener('click', closeModal);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+    });
+
+    var phoneInput = modal.querySelector('input[name="phone"]');
+    if (phoneInput) {
+      phoneInput.addEventListener('input', function (e) {
+        var digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+        var out = '';
+        if (digits.length > 0) out = '(' + digits.slice(0, 3);
+        if (digits.length >= 4) out += ') ' + digits.slice(3, 6);
+        if (digits.length >= 7) out += '-' + digits.slice(6);
+        e.target.value = out;
+      });
+    }
+
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var valid = true;
+        form.querySelectorAll('[required]').forEach(function (field) {
+          var parent = field.closest('.form-field');
+          if (!field.value.trim()) {
+            valid = false;
+            if (parent) parent.classList.add('has-error');
+          } else {
+            if (parent) parent.classList.remove('has-error');
+          }
+        });
+        var emailField = form.querySelector('input[type="email"]');
+        if (emailField && emailField.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
+          valid = false;
+          var parent = emailField.closest('.form-field');
+          if (parent) parent.classList.add('has-error');
+        }
+        if (!valid) return;
+
+        var data = Object.fromEntries(new FormData(form).entries());
+        try {
+          sessionStorage.setItem('leadFormData', JSON.stringify(data));
+        } catch (err) {}
+
+        // TODO: To wire backend capture, POST `data` to a webhook or GHL form endpoint here
+        // before the redirect. Sessionstorage hand-off is the default.
+
+        window.location.href = 'booking.html?program=' + encodeURIComponent(data.program || '');
+      });
+    }
+  }
+
+  // -------- 9. BOOKING PAGE logic --------
+  function initBookingPage() {
+    if (!document.body.classList.contains('booking-page')) return;
+
+    var params = new URLSearchParams(window.location.search);
+    var program = params.get('program') || 'adult-bjj';
+
+    var showCalendar = function (programId) {
+      var calendars = document.querySelectorAll('.booking-calendar');
+      var found = false;
+      calendars.forEach(function (c) {
+        if (c.dataset.program === programId) {
+          c.classList.add('active');
+          found = true;
+        } else {
+          c.classList.remove('active');
+        }
+      });
+      if (!found && calendars.length) {
+        calendars[0].classList.add('active');
+        programId = calendars[0].dataset.program;
+      }
+      document.querySelectorAll('.program-chip').forEach(function (chip) {
+        chip.classList.toggle('active', chip.dataset.program === programId);
+      });
+    };
+
+    showCalendar(program);
+
+    document.querySelectorAll('.program-chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        showCalendar(chip.dataset.program);
+      });
+    });
+
+    try {
+      var saved = JSON.parse(sessionStorage.getItem('leadFormData') || '{}');
+      if (saved.firstName) {
+        var greeting = document.querySelector('[data-lead-greeting]');
+        if (greeting) {
+          greeting.textContent = saved.firstName.toUpperCase() + ', ';
+        }
+      }
+    } catch (err) {}
+  }
+
+  // -------- 10. Magnetic buttons (subtle) --------
+  function initMagneticButtons() {
+    var buttons = document.querySelectorAll('.btn-primary, .nav-cta');
+    buttons.forEach(function (btn) {
+      btn.addEventListener('mousemove', function (e) {
+        var rect = btn.getBoundingClientRect();
+        var x = e.clientX - rect.left - rect.width / 2;
+        var y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = 'translate(' + (x * 0.12) + 'px, ' + (y * 0.12 - 2) + 'px)';
+      });
+      btn.addEventListener('mouseleave', function () {
+        btn.style.transform = '';
+      });
+    });
+  }
+
+  // -------- INIT --------
+  function initAll() {
+    initIcons();
+    initYear();
+    initNavScroll();
+    initMobileNav();
+    initMarquee();
+    initStatCounters();
+    initScrollReveals();
+    initLeadModal();
+    initBookingPage();
+    initMagneticButtons();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+})();

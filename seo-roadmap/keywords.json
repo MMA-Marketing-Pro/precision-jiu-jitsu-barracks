@@ -1,0 +1,128 @@
+{
+  "business": {
+    "name": "Precision Jiu-Jitsu — The Barracks",
+    "slug": "precision-jiu-jitsu-barracks",
+    "domain": "precisionjjbarracks.com",
+    "primaryCity": "Collegeville",
+    "actualLocation": "Schwenksville",
+    "state": "PA",
+    "county": "Montgomery County",
+    "zipPrimary": "19473",
+    "radiusMiles": 20
+  },
+  "neighborhoods": {
+    "tier1_primary": [
+      "Collegeville",
+      "Schwenksville",
+      "Skippack",
+      "Limerick",
+      "Royersford"
+    ],
+    "tier2_secondary": [
+      "Phoenixville",
+      "Trappe",
+      "Pottstown",
+      "Spring Mount",
+      "Harleysville"
+    ],
+    "tier3_edge": [
+      "Norristown",
+      "King of Prussia",
+      "Lansdale",
+      "Graterford",
+      "Perkiomenville",
+      "Spring City"
+    ],
+    "validation_note": "Neighborhoods selected from Montgomery County + close Chester County towns within ~20 mile radius of 2047 Bridge Rd, Schwenksville PA. User should validate whether local search intent actually includes all these names — smaller villages like Perkiomenville and Graterford may have very low volume but signal hyper-local expertise."
+  },
+  "services": {
+    "trial_programs": [
+      { "slug": "adult-bjj", "name": "Adult Brazilian Jiu-Jitsu", "keyword": "adult bjj", "long": "adult brazilian jiu-jitsu" },
+      { "slug": "kids-bjj-10-14", "name": "Kids Jiu-Jitsu (Ages 10-14)", "keyword": "kids bjj 10-14", "long": "kids jiu-jitsu ages 10 to 14" },
+      { "slug": "kids-bjj-7-10", "name": "Kids Jiu-Jitsu (Ages 7-10)", "keyword": "kids bjj 7-10", "long": "kids jiu-jitsu ages 7 to 10" },
+      { "slug": "muay-thai", "name": "Muay Thai", "keyword": "muay thai", "long": "muay thai kickboxing" }
+    ],
+    "broader_services": [
+      { "slug": "brazilian-jiu-jitsu", "keyword": "brazilian jiu jitsu" },
+      { "slug": "no-gi-bjj", "keyword": "no-gi bjj" },
+      { "slug": "gi-bjj", "keyword": "gi bjj" },
+      { "slug": "mma-gym", "keyword": "mma gym" },
+      { "slug": "kids-martial-arts", "keyword": "kids martial arts" },
+      { "slug": "self-defense-classes", "keyword": "self defense classes" },
+      { "slug": "kickboxing", "keyword": "kickboxing" },
+      { "slug": "wrestling", "keyword": "wrestling" }
+    ]
+  },
+  "personas": [
+    { "slug": "beginners", "name": "Beginners", "audience": "Adults new to martial arts" },
+    { "slug": "adults-over-30", "name": "Adults Over 30", "audience": "Working professionals 30+" },
+    { "slug": "adults-over-40", "name": "Adults Over 40", "audience": "Older adults who want to start" },
+    { "slug": "women", "name": "Women", "audience": "Women of any skill level" },
+    { "slug": "teens", "name": "Teens", "audience": "Teenagers 13-17" },
+    { "slug": "parents", "name": "Parents & Kids", "audience": "Families who want to train together" },
+    { "slug": "competitors", "name": "Competitors", "audience": "Athletes training for tournaments" }
+  ],
+  "comparisons": [
+    { "slug": "bjj-vs-wrestling", "title": "BJJ vs Wrestling" },
+    { "slug": "bjj-vs-muay-thai", "title": "BJJ vs Muay Thai" },
+    { "slug": "bjj-vs-karate", "title": "BJJ vs Karate" },
+    { "slug": "bjj-vs-judo", "title": "BJJ vs Judo" },
+    { "slug": "gi-vs-no-gi-bjj", "title": "Gi vs No-Gi BJJ" },
+    { "slug": "muay-thai-vs-kickboxing", "title": "Muay Thai vs Kickboxing" },
+    { "slug": "kids-bjj-vs-karate", "title": "Kids BJJ vs Karate for Kids" }
+  ],
+  "glossary": [
+    "what-is-brazilian-jiu-jitsu",
+    "what-is-no-gi-bjj",
+    "what-is-muay-thai",
+    "what-is-a-bjj-black-belt",
+    "bjj-belt-ranking-system",
+    "gi-vs-no-gi-bjj-explained",
+    "what-to-wear-to-your-first-bjj-class",
+    "how-to-choose-a-bjj-school",
+    "how-long-to-get-a-bjj-blue-belt",
+    "adult-bjj-beginners-complete-guide",
+    "bjj-competition-guide-for-beginners",
+    "benefits-of-bjj-for-kids",
+    "benefits-of-bjj-for-women",
+    "how-to-start-bjj-as-an-adult",
+    "ibjjf-explained",
+    "bjj-tournament-preparation",
+    "what-is-open-mat",
+    "how-much-does-bjj-cost",
+    "bjj-hygiene-and-etiquette",
+    "is-bjj-good-for-self-defense"
+  ],
+  "examples_tutorials": [
+    "basic-bjj-guard-positions",
+    "bjj-takedowns-for-beginners",
+    "5-most-common-bjj-submissions",
+    "muay-thai-kicks-explained",
+    "bjj-warmups-routine",
+    "bjj-passing-the-guard-basics",
+    "self-defense-from-the-ground",
+    "bjj-escape-from-side-control"
+  ],
+  "curation_best": [
+    "best-bjj-gym-in-collegeville",
+    "best-bjj-gym-in-montgomery-county",
+    "best-kids-bjj-in-collegeville",
+    "best-kids-martial-arts-in-montgomery-county",
+    "best-mma-gym-in-montgomery-county",
+    "best-muay-thai-in-collegeville",
+    "best-womens-bjj-in-pa",
+    "best-bjj-gym-near-king-of-prussia"
+  ],
+  "pricing_offer": [
+    "free-week-trial-bjj-collegeville",
+    "free-week-trial-kids-bjj",
+    "free-week-trial-muay-thai",
+    "bjj-pricing-collegeville",
+    "kids-bjj-pricing",
+    "muay-thai-pricing",
+    "monthly-membership-bjj",
+    "private-lessons-bjj",
+    "family-pricing-bjj",
+    "summer-camp-kids-bjj"
+  ]
+}
