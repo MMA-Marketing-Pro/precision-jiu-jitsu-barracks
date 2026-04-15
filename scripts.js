@@ -281,7 +281,87 @@
     } catch (err) {}
   }
 
-  // -------- 10. Magnetic buttons (subtle) --------
+  // -------- 10. Schedule legend filter --------
+  function initScheduleFilter() {
+    var legend = document.querySelector('.schedule-legend');
+    var days = document.querySelector('.schedule-days');
+    if (!legend || !days) return;
+
+    var filterMap = {
+      '--gi':        ['class-type-gi', 'class-type-kids-gi'],
+      '--no-gi':     ['class-type-no-gi', 'class-type-kids-no-gi'],
+      '--muay':      ['class-type-muay-thai'],
+      '--wrestling': ['class-type-wrestling']
+    };
+
+    var keys = ['--gi', '--no-gi', '--muay', '--wrestling'];
+    var activeFilters = {};
+    var chips = legend.querySelectorAll('.legend-chip');
+
+    chips.forEach(function (chip) {
+      var dot = chip.querySelector('.legend-chip-dot');
+      if (!dot) return;
+      var key = null;
+      for (var i = 0; i < keys.length; i++) {
+        if (dot.classList.contains(keys[i])) { key = keys[i]; break; }
+      }
+      if (!key) return;
+
+      chip.setAttribute('role', 'button');
+      chip.setAttribute('tabindex', '0');
+      chip.setAttribute('aria-pressed', 'false');
+      chip.dataset.filterKey = key;
+
+      chip.addEventListener('click', function () { toggle(chip, key); });
+      chip.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggle(chip, key);
+        }
+      });
+    });
+
+    function toggle(chip, key) {
+      if (activeFilters[key]) {
+        delete activeFilters[key];
+        chip.classList.remove('is-active');
+        chip.setAttribute('aria-pressed', 'false');
+      } else {
+        activeFilters[key] = true;
+        chip.classList.add('is-active');
+        chip.setAttribute('aria-pressed', 'true');
+      }
+      apply();
+    }
+
+    function apply() {
+      var activeKeys = Object.keys(activeFilters);
+      var classes = days.querySelectorAll('.schedule-class');
+
+      if (activeKeys.length === 0) {
+        days.classList.remove('is-filtered');
+        classes.forEach(function (el) { el.classList.remove('is-dim'); });
+        return;
+      }
+
+      var keepList = [];
+      activeKeys.forEach(function (k) {
+        (filterMap[k] || []).forEach(function (c) { keepList.push(c); });
+      });
+
+      days.classList.add('is-filtered');
+      classes.forEach(function (el) {
+        var keep = false;
+        for (var i = 0; i < keepList.length; i++) {
+          if (el.classList.contains(keepList[i])) { keep = true; break; }
+        }
+        if (keep) el.classList.remove('is-dim');
+        else el.classList.add('is-dim');
+      });
+    }
+  }
+
+  // -------- 11. Magnetic buttons (subtle) --------
   function initMagneticButtons() {
     var buttons = document.querySelectorAll('.btn-primary, .nav-cta');
     buttons.forEach(function (btn) {
@@ -308,6 +388,7 @@
     initScrollReveals();
     initLeadModal();
     initBookingPage();
+    initScheduleFilter();
     initMagneticButtons();
   }
 

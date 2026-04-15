@@ -42,7 +42,7 @@ Re-read (if fresh session):
 **Content outline (700-1,200 words):**
 1. Intro — "We run The Barracks in Schwenksville. We're biased, but we'll tell you what to look for honestly — even if that's not us for every student." (Authority + honesty = ranking signal)
 2. **"What to look for in a {thing}"** — 5-7 objective criteria (black belt instruction, insurance, clean mats, women-welcoming, real competition pedigree, transparent pricing, etc.)
-3. **"What The Barracks offers"** — map each criterion to specific Precision features (Pete's credentials, 8 coaches, 35+ classes/week, etc.)
+3. **"What The Barracks offers"** — map each criterion to specific Precision features (Pete's credentials, 8 coaches, 30+ classes/week, etc.)
 4. **"Who we're NOT the right fit for"** — counter-intuitive honesty: "If you're hunting a $49/month strip-mall McDojo, we're not it. If you want pressure-tested black belt instruction with a family-friendly room, come train with us." (This kind of honesty ranks well for "best" queries because it differentiates.)
 5. Optional: brief nod to 1-2 other regional BJJ academies (don't disparage, just acknowledge they exist for context — Google treats this as E-E-A-T positive)
 6. CTA — free week

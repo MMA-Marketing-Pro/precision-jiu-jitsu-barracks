@@ -1412,6 +1412,26 @@ body::after {
 }
 
 /* ---------- 18. SCHEDULE TABLE ---------- */
+/* Unit Designations — class types encoded as brand-native materials, not rainbow colors.
+   Gi = pressed white · No-Gi = brushed steel · Muay Thai = oxblood · Wrestling = brass.
+   Kids classes share the parent discipline's material but use a chevron stripe (junior rank). */
+.class-type-gi         { --c: #F5F5F7; }
+.class-type-no-gi      { --c: #A8ACB3; }
+.class-type-muay-thai  { --c: #7A1F24; }
+.class-type-wrestling  { --c: #B8915A; }
+.class-type-kids-gi    { --c: #F5F5F7; }
+.class-type-kids-no-gi { --c: #A8ACB3; }
+
+.schedule-legend-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+}
+
 .schedule-legend {
   display: flex;
   flex-wrap: wrap;
@@ -1422,8 +1442,8 @@ body::after {
 .legend-chip {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: 8px 14px;
+  gap: 10px;
+  padding: 9px 14px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
@@ -1432,26 +1452,32 @@ body::after {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.22s var(--ease), background 0.22s var(--ease), color 0.22s var(--ease);
 }
 
+.legend-chip:hover { border-color: var(--border-strong); }
+.legend-chip:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+.legend-chip.is-active {
+  border-color: var(--text);
+  background: rgba(245, 245, 247, 0.08);
+}
+
+/* Stripe marker — same visual language as the class-card left-rule, just miniature */
 .legend-chip-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
+  width: 4px;
+  height: 14px;
+  border-radius: 1px;
   flex-shrink: 0;
 }
 
-.class-type-gi       { --c: #3B82F6; } /* blue */
-.class-type-no-gi    { --c: #F97316; } /* orange */
-.class-type-muay-thai{ --c: #22C55E; } /* green */
-.class-type-wrestling{ --c: #A855F7; } /* purple */
-.class-type-kids-gi  { --c: #3B82F6; }
-.class-type-kids-no-gi{--c: #F97316; }
-
-.legend-chip-dot.--gi       { background: #3B82F6; }
-.legend-chip-dot.--no-gi    { background: #F97316; }
-.legend-chip-dot.--muay     { background: #22C55E; }
-.legend-chip-dot.--wrestling{ background: #A855F7; }
+.legend-chip-dot.--gi        { background: #F5F5F7; }
+.legend-chip-dot.--no-gi     { background: #A8ACB3; }
+.legend-chip-dot.--muay      { background: #7A1F24; }
+.legend-chip-dot.--wrestling { background: #B8915A; }
 
 .schedule-days {
   display: grid;
@@ -1493,6 +1519,7 @@ body::after {
   border-bottom: 1px dashed var(--border);
   position: relative;
   padding-left: 12px;
+  transition: opacity 0.28s var(--ease), filter 0.28s var(--ease);
 }
 
 .schedule-class:last-child { border-bottom: none; }
@@ -1506,6 +1533,24 @@ body::after {
   height: calc(100% - 18px);
   background: var(--c);
   border-radius: 2px;
+}
+
+/* Kids variants: same discipline color, marked as "junior rank" with a chevron stripe */
+.class-type-kids-gi::before,
+.class-type-kids-no-gi::before {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--c) 0,
+    var(--c) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+}
+
+/* Filter dimming — applied when any legend chip is active */
+.schedule-days.is-filtered .schedule-class.is-dim {
+  opacity: 0.2;
+  filter: grayscale(0.5);
 }
 
 .schedule-class-time {

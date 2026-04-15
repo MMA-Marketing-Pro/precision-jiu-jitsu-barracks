@@ -82,7 +82,7 @@ Spread the 4 trial programs across the 6 tier-3 neighborhoods (Norristown exclud
 | 24 | muay-thai-perkiomenville | Muay Thai | Perkiomenville |
 | 25 | muay-thai-spring-city | Muay Thai | Spring City |
 
-Use the Phase 1 location-spoke template. Drive times will be 15-30 min for these tier-3 neighborhoods — acknowledge the drive in the page's intro and explain why the trip is worth it (real black belt instruction, 35+ classes a week, a coaching staff that includes an IBJJF medalist — not every BJJ school in PA can say that).
+Use the Phase 1 location-spoke template. Drive times will be 15-30 min for these tier-3 neighborhoods — acknowledge the drive in the page's intro and explain why the trip is worth it (real black belt instruction, 30+ classes a week, a coaching staff that includes an IBJJF medalist — not every BJJ school in PA can say that).
 
 > **Consider:** After Phase 5, if some tier-3 location pages are getting <5 monthly impressions in Search Console, mark them for noindex in Phase 6's cleanup. Edge pages are a coin flip — some win, some don't.
 
