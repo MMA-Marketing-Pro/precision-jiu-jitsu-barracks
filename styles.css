@@ -2329,6 +2329,14 @@ body::after {
   .orgs-row { gap: var(--space-lg); }
   .hero h1 { max-width: 100%; }
 
+  /* Hero — drop full-viewport min-height and bottom-pin so content lands
+     right under the navbar instead of at the bottom of a 100vh container */
+  .hero {
+    align-items: flex-start;
+    min-height: auto;
+    padding-bottom: var(--space-2xl);
+  }
+
   /* Page header — drop excess top air; tighter min-height so the eye lands on the H1 */
   .page-header {
     padding-top: calc(var(--nav-h) + 32px);
