@@ -419,8 +419,10 @@ body::after {
   text-transform: uppercase;
   color: var(--text);
   padding: 8px 14px;
-  background: rgba(230, 30, 44, 0.18);
-  border-left: 3px solid var(--accent);
+  background: rgba(255, 255, 255, 0.06);
+  border-left: 3px solid rgba(245, 245, 247, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   margin-bottom: var(--space-xl);
   text-shadow: 0 1px 14px rgba(0, 0, 0, 0.8);
 }
@@ -429,14 +431,14 @@ body::after {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 4px rgba(230, 30, 44, 0.35);
+  background: #F5F5F7;
+  box-shadow: 0 0 0 4px rgba(245, 245, 247, 0.3);
   animation: pulse 2s ease-in-out infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 4px rgba(230, 30, 44, 0.35); }
-  50%      { box-shadow: 0 0 0 8px rgba(230, 30, 44, 0.0); }
+  0%, 100% { box-shadow: 0 0 0 4px rgba(245, 245, 247, 0.3); }
+  50%      { box-shadow: 0 0 0 8px rgba(245, 245, 247, 0.0); }
 }
 
 .hero h1 {
@@ -454,11 +456,15 @@ body::after {
 
 .hero h1 .accent-line {
   display: block;
-  color: var(--accent);
-  text-shadow:
-    0 1px 0 rgba(0, 0, 0, 0.7),
-    0 4px 24px rgba(230, 30, 44, 0.45),
-    0 20px 42px rgba(0, 0, 0, 0.55);
+  color: transparent;
+  background: linear-gradient(180deg, #EDEEF0 0%, #C8CBD0 48%, #8A8D94 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: none;
+  filter:
+    drop-shadow(0 1px 0 rgba(0, 0, 0, 0.7))
+    drop-shadow(0 2px 10px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 20px 42px rgba(0, 0, 0, 0.55));
 }
 
 .hero-lead {
@@ -552,13 +558,19 @@ body::after {
 .btn-block { width: 100%; justify-content: center; }
 
 /* ---------- 7. MARQUEE ---------- */
+/* Default variant = brushed-steel "Barracks nameplate" — embossed charcoal on metallic gradient */
 .marquee {
-  background: var(--accent);
-  color: var(--text);
+  background: linear-gradient(180deg, #D8DADF 0%, #BCC0C6 50%, #9AA0A8 100%);
+  color: var(--text-inverse);
   overflow: hidden;
   padding-block: var(--space-lg);
   border-top: 2px solid var(--text-inverse);
   border-bottom: 2px solid var(--text-inverse);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 10px 18px -10px rgba(0, 0, 0, 0.3),
+    inset 0 -10px 18px -10px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 2;
 }
@@ -582,6 +594,11 @@ body::after {
   text-transform: uppercase;
 }
 
+.marquee:not(.marquee--dark) .marquee-item {
+  color: var(--text-inverse);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
 .marquee-star {
   display: inline-flex;
   width: 18px;
@@ -591,10 +608,16 @@ body::after {
   flex-shrink: 0;
 }
 
+.marquee:not(.marquee--dark) .marquee-star {
+  background: var(--text-inverse);
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.5));
+}
+
 .marquee--dark {
   background: var(--bg);
   color: var(--text);
   border-color: var(--accent);
+  box-shadow: none;
 }
 .marquee--dark .marquee-item { color: var(--text); }
 .marquee--dark .marquee-item .highlight { color: var(--accent); }
