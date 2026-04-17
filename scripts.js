@@ -227,8 +227,42 @@
           sessionStorage.setItem('leadFormData', JSON.stringify(data));
         } catch (err) {}
 
-        // TODO: To wire backend capture, POST `data` to a webhook or GHL form endpoint here
-        // before the redirect. Sessionstorage hand-off is the default.
+        // GHL webhook URLs per program (each program fires two webhooks)
+        var webhookMap = {
+          'adult-bjj': [
+            'https://services.leadconnectorhq.com/hooks/WWCuYhXDYLUd3ZAapYIY/webhook-trigger/b182e471-302d-43ee-a57f-7232d2bd300e',
+            'https://services.leadconnectorhq.com/hooks/WWCuYhXDYLUd3ZAapYIY/webhook-trigger/d3d4b131-0f4b-458a-8593-ce5d3d7f232d'
+          ],
+          'kids-bjj-10-14': [
+            'https://services.leadconnectorhq.com/hooks/WWCuYhXDYLUd3ZAapYIY/webhook-trigger/407f4901-8ff9-4f00-91a7-2d14c11eb09e',
+            'https://services.leadconnectorhq.com/hooks/WWCuYhXDYLUd3ZAapYIY/webhook-trigger/281083ca-f460-4469-8b67-54a4590ab613'
+          ],
+          'kids-bjj-7-10': [
+            'https://services.leadconnectorhq.com/hooks/WWCuYhXDYLUd3ZAapYIY/webhook-trigger/407f4901-8ff9-4f00-91a7-2d14c11eb09e',
+            'https://services.leadconnectorhq.com/hooks/WWCuYhXDYLUd3ZAapYIY/webhook-trigger/281083ca-f460-4469-8b67-54a4590ab613'
+          ],
+          'muay-thai': [
+            'https://services.leadconnectorhq.com/hooks/WWCuYhXDYLUd3ZAapYIY/webhook-trigger/50ac1e4d-bcd8-4b26-be86-6038a37571a2',
+            'https://services.leadconnectorhq.com/hooks/WWCuYhXDYLUd3ZAapYIY/webhook-trigger/cc72d8aa-adc5-414c-b714-0fe557dc4109'
+          ]
+        };
+
+        var urls = webhookMap[data.program] || [];
+        var payload = JSON.stringify({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phone: data.phone,
+          program: data.program
+        });
+
+        urls.forEach(function(url) {
+          fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload
+          }).catch(function() {});
+        });
 
         window.location.href = 'booking.html?program=' + encodeURIComponent(data.program || '');
       });
