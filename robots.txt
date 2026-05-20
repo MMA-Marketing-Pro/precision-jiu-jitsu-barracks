@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /booking
 Disallow: /booking.html
 
 Sitemap: https://precisionjjbarracks.com/sitemap.xml
