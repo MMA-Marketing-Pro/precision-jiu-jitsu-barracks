@@ -2386,18 +2386,44 @@ body::after {
 }
 
 @media (max-width: 768px) {
+  .nav {
+    position: sticky;
+    inset: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: var(--nav-h);
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .nav::before { display: none; }
+
+  .nav.scrolled {
+    background: var(--bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
   .nav-links, .nav-cta { display: none; }
   .nav-toggle { display: inline-flex; }
 
   .nav.open .nav-mobile {
     display: flex;
     flex-direction: column;
-    position: fixed;
-    inset: var(--nav-h) 0 0 0;
+    position: absolute;
+    inset: auto;
+    top: 100%;
+    left: 0;
+    right: 0;
     background: var(--bg);
     padding: var(--space-2xl) var(--container-gutter);
     gap: var(--space-lg);
-    z-index: 200;
+    z-index: 1001;
+    max-height: calc(100dvh - var(--nav-h));
     overflow-y: auto;
   }
 
@@ -2431,12 +2457,13 @@ body::after {
   .hero {
     align-items: flex-start;
     min-height: auto;
+    padding-top: var(--space-lg);
     padding-bottom: var(--space-2xl);
   }
 
   /* Page header — drop excess top air; tighter min-height so the eye lands on the H1 */
   .page-header {
-    padding-top: calc(var(--nav-h) + 32px);
+    padding-top: var(--space-xl);
     padding-bottom: 40px;
     min-height: 320px;
   }
@@ -2454,7 +2481,7 @@ body::after {
 
   /* Even tighter on very narrow phones (iPhone SE / Mini class) */
   .page-header {
-    padding-top: calc(var(--nav-h) + 24px);
+    padding-top: var(--space-lg);
     padding-bottom: 32px;
     min-height: 280px;
   }
@@ -3368,7 +3395,7 @@ body::after {
 
 /* ---------- KL · MOBILE TUNING ---------- */
 @media (max-width: 768px) {
-  .kl-hero { padding-top: calc(var(--nav-h) + 20px); padding-bottom: var(--space-2xl); }
+  .kl-hero { padding-top: var(--space-lg); padding-bottom: var(--space-2xl); }
   .kl-hero-meta { gap: 6px 8px; }
   .kl-hero-meta li { padding: 6px 10px; font-size: 10px; }
   .kl-h1 { font-size: clamp(2.1rem, 9vw, 3.25rem); margin-bottom: var(--space-md); }
@@ -3383,4 +3410,3 @@ body::after {
   .kl-fit-list li { padding: 12px 14px 12px 36px; font-size: 0.95rem; }
   .kl-claim-meta { margin-top: var(--space-lg); }
 }
-
