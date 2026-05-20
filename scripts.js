@@ -411,6 +411,130 @@
     });
   }
 
+  // -------- 12. KIDS LEAD FORM (inline, /kids-jiu-jitsu) --------
+  // Same webhookMap + redirect behavior as the global modal, but for the
+  // page-embedded forms that capture childAge + preferredTime and auto-route
+  // to kids-bjj-7-10 (age <= 9) or kids-bjj-10-14 (age 10+).
+  function initKidsLeadForms() {
+    var forms = document.querySelectorAll('form[data-kids-form]');
+    if (!forms.length) return;
+
+    var webhookMap = {
+      'kids-bjj-7-10': [
+        'https://services.leadconnectorhq.com/hooks/WWCuYhXDYLUd3ZAapYIY/webhook-trigger/407f4901-8ff9-4f00-91a7-2d14c11eb09e',
+        'https://services.leadconnectorhq.com/hooks/WWCuYhXDYLUd3ZAapYIY/webhook-trigger/281083ca-f460-4469-8b67-54a4590ab613'
+      ],
+      'kids-bjj-10-14': [
+        'https://services.leadconnectorhq.com/hooks/WWCuYhXDYLUd3ZAapYIY/webhook-trigger/407f4901-8ff9-4f00-91a7-2d14c11eb09e',
+        'https://services.leadconnectorhq.com/hooks/WWCuYhXDYLUd3ZAapYIY/webhook-trigger/281083ca-f460-4469-8b67-54a4590ab613'
+      ]
+    };
+
+    var maskPhone = function (input) {
+      input.addEventListener('input', function (e) {
+        var digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+        var out = '';
+        if (digits.length > 0) out = '(' + digits.slice(0, 3);
+        if (digits.length >= 4) out += ') ' + digits.slice(3, 6);
+        if (digits.length >= 7) out += '-' + digits.slice(6);
+        e.target.value = out;
+      });
+    };
+
+    forms.forEach(function (form) {
+      var phoneInput = form.querySelector('input[data-phone-mask]');
+      if (phoneInput) maskPhone(phoneInput);
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var valid = true;
+        form.querySelectorAll('[required]').forEach(function (field) {
+          var parent = field.closest('.form-field');
+          if (!field.value.trim()) {
+            valid = false;
+            if (parent) parent.classList.add('has-error');
+          } else {
+            if (parent) parent.classList.remove('has-error');
+          }
+        });
+
+        var emailField = form.querySelector('input[type="email"]');
+        if (emailField && emailField.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
+          valid = false;
+          var emailParent = emailField.closest('.form-field');
+          if (emailParent) emailParent.classList.add('has-error');
+        }
+
+        var ageField = form.querySelector('input[name="childAge"]');
+        var age = ageField ? parseInt(ageField.value, 10) : NaN;
+        if (!ageField || isNaN(age) || age < 4 || age > 16) {
+          valid = false;
+          var ageParent = ageField ? ageField.closest('.form-field') : null;
+          if (ageParent) ageParent.classList.add('has-error');
+        }
+
+        if (!valid) {
+          var firstError = form.querySelector('.form-field.has-error input, .form-field.has-error select');
+          if (firstError) firstError.focus({ preventScroll: false });
+          return;
+        }
+
+        // Route to the correct GHL bucket by child age.
+        var program = age <= 9 ? 'kids-bjj-7-10' : 'kids-bjj-10-14';
+        var data = Object.fromEntries(new FormData(form).entries());
+        data.program = program;
+
+        try {
+          sessionStorage.setItem('leadFormData', JSON.stringify(data));
+        } catch (err) {}
+
+        var payload = JSON.stringify({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phone: data.phone,
+          childAge: data.childAge,
+          preferredTime: data.preferredTime,
+          program: program
+        });
+
+        var urls = webhookMap[program] || [];
+        urls.forEach(function (url) {
+          fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload
+          }).catch(function () {});
+        });
+
+        var submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.setAttribute('disabled', 'true');
+          submitBtn.textContent = 'Sending…';
+        }
+
+        window.location.href = 'booking.html?program=' + encodeURIComponent(program);
+      });
+    });
+  }
+
+  // -------- 13. KIDS PAGE — sticky mobile CTA hide-when-form-visible --------
+  function initKidsStickyCta() {
+    var cta = document.querySelector('.kl-sticky-cta');
+    var claim = document.getElementById('claim');
+    if (!cta || !claim || !('IntersectionObserver' in window)) return;
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) cta.classList.add('is-hidden');
+        else cta.classList.remove('is-hidden');
+      });
+    }, { threshold: 0.15 });
+
+    io.observe(claim);
+  }
+
   // -------- INIT --------
   function initAll() {
     initIcons();
@@ -424,6 +548,8 @@
     initBookingPage();
     initScheduleFilter();
     initMagneticButtons();
+    initKidsLeadForms();
+    initKidsStickyCta();
   }
 
   if (document.readyState === 'loading') {
