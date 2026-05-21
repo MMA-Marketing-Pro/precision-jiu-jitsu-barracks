@@ -227,6 +227,14 @@
           sessionStorage.setItem('leadFormData', JSON.stringify(data));
         } catch (err) {}
 
+        // Meta Pixel — Lead conversion
+        if (typeof window.fbq === 'function') {
+          window.fbq('track', 'Lead', {
+            content_name: data.program || 'lead-modal',
+            content_category: 'free-trial'
+          });
+        }
+
         // GHL webhook URLs per program (each program fires two webhooks)
         var webhookMap = {
           'adult-bjj': [
@@ -488,6 +496,14 @@
         try {
           sessionStorage.setItem('leadFormData', JSON.stringify(data));
         } catch (err) {}
+
+        // Meta Pixel — Lead conversion
+        if (typeof window.fbq === 'function') {
+          window.fbq('track', 'Lead', {
+            content_name: program,
+            content_category: 'kids-free-trial'
+          });
+        }
 
         var payload = JSON.stringify({
           firstName: data.firstName,
