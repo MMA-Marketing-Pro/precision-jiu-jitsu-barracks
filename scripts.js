@@ -420,9 +420,9 @@
   }
 
   // -------- 12. KIDS LEAD FORM (inline, /kids-jiu-jitsu) --------
-  // Same webhookMap + redirect behavior as the global modal, but for the
-  // page-embedded forms that capture childAge + preferredTime and auto-route
-  // to kids-bjj-7-10 (age <= 9) or kids-bjj-10-14 (age 10+).
+  // Page-embedded kids forms. Parent picks the age-banded program from a
+  // dropdown (kids-bjj-7-10 or kids-bjj-10-14); same GHL webhooks fire either
+  // way, and the redirect routes to the matching calendar on booking.html.
   function initKidsLeadForms() {
     var forms = document.querySelectorAll('form[data-kids-form]');
     if (!forms.length) return;
@@ -474,24 +474,14 @@
           if (emailParent) emailParent.classList.add('has-error');
         }
 
-        var ageField = form.querySelector('input[name="childAge"]');
-        var age = ageField ? parseInt(ageField.value, 10) : NaN;
-        if (!ageField || isNaN(age) || age < 4 || age > 16) {
-          valid = false;
-          var ageParent = ageField ? ageField.closest('.form-field') : null;
-          if (ageParent) ageParent.classList.add('has-error');
-        }
-
         if (!valid) {
           var firstError = form.querySelector('.form-field.has-error input, .form-field.has-error select');
           if (firstError) firstError.focus({ preventScroll: false });
           return;
         }
 
-        // Route to the correct GHL bucket by child age.
-        var program = age <= 9 ? 'kids-bjj-7-10' : 'kids-bjj-10-14';
         var data = Object.fromEntries(new FormData(form).entries());
-        data.program = program;
+        var program = data.program;
 
         try {
           sessionStorage.setItem('leadFormData', JSON.stringify(data));
@@ -510,8 +500,6 @@
           lastName: data.lastName,
           email: data.email,
           phone: data.phone,
-          childAge: data.childAge,
-          preferredTime: data.preferredTime,
           program: program
         });
 
