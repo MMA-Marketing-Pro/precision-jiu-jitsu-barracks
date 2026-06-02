@@ -1584,7 +1584,6 @@ body::after {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   gap: clamp(32px, 5vw, 80px);
-  align-items: start;
 }
 
 .contact-info {
@@ -1630,23 +1629,6 @@ body::after {
   text-transform: none;
   letter-spacing: 0;
   margin-top: 4px;
-}
-
-.contact-form {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  padding: clamp(32px, 4vw, 48px);
-}
-
-.contact-form h3 {
-  font-size: clamp(1.5rem, 2.5vw, 2rem);
-  margin-bottom: var(--space-sm);
-}
-
-.contact-form-sub {
-  color: var(--text-muted);
-  margin-bottom: var(--space-xl);
-  font-size: var(--text-sm);
 }
 
 .form-field { margin-bottom: var(--space-md); }
@@ -1705,8 +1687,7 @@ body::after {
 .form-field.has-error .form-field-error { display: block; }
 
 .map-embed {
-  margin-top: var(--space-2xl);
-  aspect-ratio: 16 / 7;
+  min-height: 420px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   overflow: hidden;

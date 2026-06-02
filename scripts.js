@@ -268,7 +268,8 @@
           fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: payload
+            body: payload,
+            keepalive: true
           }).catch(function() {});
         });
 
@@ -508,7 +509,8 @@
           fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: payload
+            body: payload,
+            keepalive: true
           }).catch(function () {});
         });
 
