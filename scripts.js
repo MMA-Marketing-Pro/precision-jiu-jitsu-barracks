@@ -7,6 +7,73 @@
 (function () {
   'use strict';
 
+  var LEAD_WEBHOOK_TIMEOUT_MS = 4500;
+
+  function waitWithTimeout(promise, timeoutMs) {
+    return new Promise(function (resolve) {
+      var settled = false;
+      var timer = setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        resolve();
+      }, timeoutMs);
+
+      promise.then(function () {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve();
+      }).catch(function () {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve();
+      });
+    });
+  }
+
+  function sendLeadWebhooks(urls, payload) {
+    if (!urls.length || typeof window.fetch !== 'function') return Promise.resolve();
+
+    var requests = urls.map(function (url) {
+      return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true
+      }).catch(function () {});
+    });
+
+    return waitWithTimeout(Promise.all(requests), LEAD_WEBHOOK_TIMEOUT_MS);
+  }
+
+  function setFormSubmitting(form, isSubmitting) {
+    var submitBtn = form.querySelector('button[type="submit"]');
+    if (!submitBtn) return;
+
+    if (isSubmitting) {
+      if (!submitBtn.dataset.originalHtml) {
+        submitBtn.dataset.originalHtml = submitBtn.innerHTML;
+      }
+      submitBtn.setAttribute('disabled', 'true');
+      submitBtn.textContent = 'Sending...';
+    } else {
+      submitBtn.removeAttribute('disabled');
+      if (submitBtn.dataset.originalHtml) {
+        submitBtn.innerHTML = submitBtn.dataset.originalHtml;
+      }
+    }
+  }
+
+  function clearFormSubmitting(form) {
+    delete form.dataset.submitting;
+    setFormSubmitting(form, false);
+  }
+
+  function redirectToBooking(program) {
+    window.location.href = 'booking.html?program=' + encodeURIComponent(program || '');
+  }
+
   // -------- 1. Lucide icons --------
   function initIcons() {
     try {
@@ -204,6 +271,7 @@
     if (form) {
       form.addEventListener('submit', function (e) {
         e.preventDefault();
+        if (form.dataset.submitting === 'true') return;
         var valid = true;
         form.querySelectorAll('[required]').forEach(function (field) {
           var parent = field.closest('.form-field');
@@ -264,16 +332,19 @@
           program: data.program
         });
 
-        urls.forEach(function(url) {
-          fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: payload,
-            keepalive: true
-          }).catch(function() {});
-        });
+        form.dataset.submitting = 'true';
+        setFormSubmitting(form, true);
 
-        window.location.href = 'booking.html?program=' + encodeURIComponent(data.program || '');
+        // Mobile browsers can drop keepalive POSTs if we navigate immediately.
+        sendLeadWebhooks(urls, payload).then(function () {
+          try {
+            redirectToBooking(data.program);
+          } catch (err) {
+            clearFormSubmitting(form);
+          }
+        }).catch(function () {
+          clearFormSubmitting(form);
+        });
       });
     }
   }
@@ -456,6 +527,7 @@
 
       form.addEventListener('submit', function (e) {
         e.preventDefault();
+        if (form.dataset.submitting === 'true') return;
 
         var valid = true;
         form.querySelectorAll('[required]').forEach(function (field) {
@@ -505,22 +577,19 @@
         });
 
         var urls = webhookMap[program] || [];
-        urls.forEach(function (url) {
-          fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: payload,
-            keepalive: true
-          }).catch(function () {});
+        form.dataset.submitting = 'true';
+        setFormSubmitting(form, true);
+
+        // Mobile browsers can drop keepalive POSTs if we navigate immediately.
+        sendLeadWebhooks(urls, payload).then(function () {
+          try {
+            redirectToBooking(program);
+          } catch (err) {
+            clearFormSubmitting(form);
+          }
+        }).catch(function () {
+          clearFormSubmitting(form);
         });
-
-        var submitBtn = form.querySelector('button[type="submit"]');
-        if (submitBtn) {
-          submitBtn.setAttribute('disabled', 'true');
-          submitBtn.textContent = 'Sending…';
-        }
-
-        window.location.href = 'booking.html?program=' + encodeURIComponent(program);
       });
     });
   }
