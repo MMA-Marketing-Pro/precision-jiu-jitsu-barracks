@@ -32,7 +32,7 @@
     });
   }
 
-  function sendLeadWebhooks(urls, payload) {
+  function sendLegacyLeadWebhooks(urls, payload) {
     if (!urls.length || typeof window.fetch !== 'function') return Promise.resolve();
 
     var requests = urls.map(function (url) {
@@ -45,6 +45,25 @@
     });
 
     return waitWithTimeout(Promise.all(requests), LEAD_WEBHOOK_TIMEOUT_MS);
+  }
+
+  function sendLeadSubmission(urls, payload) {
+    if (typeof window.fetch !== 'function') return Promise.resolve();
+
+    var proxyRequest = fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: payload,
+      keepalive: true
+    }).then(function (response) {
+      if (response && !response.ok && response.status !== 502) {
+        return sendLegacyLeadWebhooks(urls, payload);
+      }
+    }).catch(function () {
+      return sendLegacyLeadWebhooks(urls, payload);
+    });
+
+    return waitWithTimeout(proxyRequest, LEAD_WEBHOOK_TIMEOUT_MS);
   }
 
   function setFormSubmitting(form, isSubmitting) {
@@ -335,8 +354,9 @@
         form.dataset.submitting = 'true';
         setFormSubmitting(form, true);
 
-        // Mobile browsers can drop keepalive POSTs if we navigate immediately.
-        sendLeadWebhooks(urls, payload).then(function () {
+        // Send through our same-origin proxy so mobile browsers do not have to
+        // post directly to a third-party webhook domain.
+        sendLeadSubmission(urls, payload).then(function () {
           try {
             redirectToBooking(data.program);
           } catch (err) {
@@ -580,8 +600,9 @@
         form.dataset.submitting = 'true';
         setFormSubmitting(form, true);
 
-        // Mobile browsers can drop keepalive POSTs if we navigate immediately.
-        sendLeadWebhooks(urls, payload).then(function () {
+        // Send through our same-origin proxy so mobile browsers do not have to
+        // post directly to a third-party webhook domain.
+        sendLeadSubmission(urls, payload).then(function () {
           try {
             redirectToBooking(program);
           } catch (err) {
